@@ -17,7 +17,7 @@ We'll show how to start using this with the Cowsay example in the previous sampl
 
 I made a copy of the `hello-pkgs` directory as `hello-webrools` into a new directory, did an `npm install webrtools`, and modified the `package.json` accordingly. This should be what yours looks like:
 
-```{json, filename="ch-04/pacakge.json"}
+```{json, filename="ch-04/hello-webrtools/pacakge.json"}
 {
   "name": "hello-webrtools",
   "version": "0.1.0",
