@@ -29,7 +29,7 @@ $ touch index.mjs                    # <4>
 
 The `.mjs` means we'll be using [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), which is a more modern way to write modular JavaScript. We need to let Node know this so, now, edit `package.json` to make it look like this (which will result in an an even more minimal version of the file):
 
-```{json, filename="ch-01/pacakge.json"}
+```{json, filename="ch-01/hello-node-cli/pacakge.json"}
 {
   "name": "hello-node-cli",
   "version": "0.1.0",
@@ -40,7 +40,7 @@ The `.mjs` means we'll be using [JavaScript modules](https://developer.mozilla.o
 ```
 Then, edit `index.mjs` and make it look like this:
 
-```{js, eval=FALSE, filename="ch-01/index.mjs"}
+```{js, eval=FALSE, filename="ch-01/hello-node-cli/index.mjs"}
 import { basename } from 'path' // <1>
 
 if (process.argv.length > 2) {  // <2>

@@ -1,0 +1,37 @@
+\documentclass[a4paper]{article}
+\usepackage{a4}
+
+\oddsidemargin  0.15 in
+\evensidemargin 0.35 in
+\marginparwidth 1 in
+\oddsidemargin 0.25 in
+\evensidemargin 0.25 in
+\marginparwidth 0.75 in
+\textwidth 5.875 in
+
+%\VignetteIndexEntry{R Fortunes: Collected Wisdom}
+%\VignetteDepends{fortunes, utils}
+%\VignetteKeywords{fortunes, wisdom}
+%\VignettePackage{fortunes}
+
+\setlength{\parskip}{0.5ex plus0.1ex minus0.1ex}
+\setlength{\parindent}{0em}
+
+\title{R Fortunes: Collected Wisdom}
+\begin{document}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\rmdefault}{phv}
+\sf
+\maketitle
+
+<<echo=FALSE, results=tex>>=
+library("fortunes")
+library("utils")
+f <- read.fortunes(system.file("fortunes", "fortunes.csv", package = "fortunes"))
+n <- nrow(f)
+fortunes <- lapply(1:n, function(i) {toLatex(fortune(i, fortunes.data = f), number = TRUE, width = c(1, 0.85))})
+invisible(lapply(fortunes, function(i) { print(i); cat("\\\\[0.2cm]\n\n") }))
+@ 
+
+
+\end{document}

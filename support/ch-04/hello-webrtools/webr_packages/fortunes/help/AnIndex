@@ -1,0 +1,5 @@
+fortune	fortunes
+fortunes	fortunes
+print.fortune	fortunes
+read.fortunes	fortunes
+toLatex.fortune	fortunes

@@ -1,0 +1,192 @@
+---
+code-annotations: below
+code-fold: false
+engine: knitr
+--- 
+# Bundling WASM-built Packages Into Your Node CLI {.unnumbered}
+
+As we noted in the previous chapter, it's possible to use WebR-built packages, but the default method forces a download each time we run the script. There has to be a better way, and there is!
+
+[Colin Fay](https://colinfay.me/) has been experimenting with WebR for as long as I have, with a slightly different focus (server-side WebR Node apps). As one might imagine, having to re-download R packages every time a Node backend service is restarted could become a bit frustrating.
+
+Colin's solution was to bundle up a way to collect all these packages into the local Node app installation and plug them directly into the WebR [filesystem](https://docs.r-wasm.org/webr/latest/api/js/interfaces/WebR.WebRFS.html). All this massively useful functionality can be found in Colin's [`webrtools`](https://www.npmjs.com/package/webrtools) NPM package.
+
+We'll show how to start using this with the Cowsay example in the previous sample.
+
+## Putting {cowsay} Into A WebR Box?
+
+I made a copy of the `hello-pkgs` directory as `hello-webrools` into a new directory, did an `npm install webrtools`, and modified the `package.json` accordingly. This should be what yours looks like:
+
+```{json, filename="ch-04/pacakge.json"}
+{
+  "name": "hello-webrtools",
+  "version": "0.1.0",
+  "description": "basic node and webr cli example that uses other packages via webrtools",
+  "main": "index.mjs",
+  "type": "module",
+  "dependencies": {
+    "webr": "^0.2.2",
+    "webrtools": "^0.0.3"
+  }
+}
+```
+
+Now, I'm a _big_ fan of using [Justfiles](https://just.systems/man/en/chapter_1.html). They're an alternative to other project orchestration systems like `make`/`Makefile`s.
+
+Colin's `webrtools` installs an R script that you need to run to make a local copy of an R package dependency tree. Rather than re-type:
+
+```bash
+$ Rscript ./node_modules/webrtools/r/install.R cowsay
+```
+
+we can make a Justfile entry:
+
+```bash
+install-pkgs:
+  Rscript ./node_modules/webrtools/r/install.R cowsay
+```
+
+and then do:
+
+```bash
+$ just install-pkgs
+Rscript ./node_modules/webrtools/r/install.R cowsay
+Using github PAT from envvar GITHUB_PAT
+Skipping install of 'webrtools' from a github remote, the SHA1 (063164d4) has not changed since last install.
+  Use `force = TRUE` to force installation
+Installing cowsay
+trying URL 'https://repo.r-wasm.org/bin/emscripten/contrib/4.3/cowsay_0.8.2.tgz'
+Content type 'application/x-tar' length 398673 bytes (389 KB)
+==================================================
+downloaded 389 KB
+
+Installing crayon
+trying URL 'https://repo.r-wasm.org/bin/emscripten/contrib/4.3/crayon_1.5.2.tgz'
+Content type 'application/x-tar' length 102076 bytes (99 KB)
+==================================================
+downloaded 99 KB
+
+Installing fortunes
+trying URL 'https://repo.r-wasm.org/bin/emscripten/contrib/4.3/fortunes_1.5-4.tgz'
+Content type 'application/x-tar' length 203378 bytes (198 KB)
+==================================================
+downloaded 198 KB
+
+Installing rmsfact
+trying URL 'https://repo.r-wasm.org/bin/emscripten/contrib/4.3/rmsfact_0.0.3.tgz'
+Content type 'application/x-tar' length 17657 bytes (17 KB)
+==================================================
+downloaded 17 KB
+
+Package {grDevices} not found in repo (unavailable or is base package)
+Package {methods} not found in repo (unavailable or is base package)
+Package {utils} not found in repo (unavailable or is base package)
+Done
+```
+
+I included the entire output so you can see what it's doing. It has a typical R package directory layout that I encourage you to explore:
+
+```bash
+$ tree -L 1 webr_packages
+webr_packages
+├── cowsay
+├── crayon
+├── fortunes
+└── rmsfact
+```
+
+That's only half the battle, however, as we need to wire that up to WebR inside the JavaScript context.
+
+Colin provides a way to do that, but it's old-school Common JavaScript (CJS). So I've modified that idiom a bit to fit our module context.
+
+We're adding a new `src/` directory to our standard WebR + Node project layout and putting `webrtools.mjs` in there. This is what that file looks like:
+
+```{js, eval=FALSE, filename="ch-04/hello-webrtools/src/webrtools.mjs"}
+// ES6 version of node_modules/webrtools/src/load.js • v0.0.3 • Copyright (c) 2023 Colin Fay
+
+export async function loadFolder(webR, dirPath, outputdir = "/usr/lib/R/library") {
+  throw new Error("Deprecated, please use webR.FS.mount instead.");
+}
+
+export async function loadPackages(webR, dirPath, libName = "webr_packages") {
+  // Create a custom lib so that we don't have to worry about
+  // overwriting any packages that are already installed.
+  await webR.FS.mkdir(`/usr/lib/R/${libName}`)
+  // Mount the custom lib
+  await webR.FS.mount("NODEFS", { root: dirPath }, `/usr/lib/R/${libName}`);
+  // Add the custom lib to the R search path
+  await webR.evalR(`.libPaths(c('/usr/lib/R/${libName}', .libPaths()))`);
+}
+```
+
+Our new main script entry point file now looks like:
+
+```{js, eval=FALSE, filename="ch-04/hello-webrtools/index.mjs"}
+import { fileURLToPath } from "url"; // <1>
+import { dirname } from "path"; // <1>
+import * as path from "path"; // <1>
+import { loadPackages } from "./src/webrtools.mjs"; // <2>
+
+const __filename = fileURLToPath(import.meta.url); // <3>
+const __dirname = dirname(__filename); // <3>
+
+import { WebR } from "webr";
+
+const webR = new WebR();
+await webR.init();
+
+globalThis.webR = webR; // <4>
+
+await loadPackages(webR, path.join(__dirname, "webr_packages")); // <5>
+
+await webR.evalRVoid(`cowsay::say("Hello from WebR + Node!")`);
+
+process.exit(0);
+```
+1. these new imports will give us tools to help us figure out where we're installed
+2. this load up our new helper functions
+3. these calls retrieve where we are installed
+4. `globalThis` is a hack that's somewhat bad in browser-land, but fine for us. Any object assigned to it is available in any place the global JavaScript context is reachable.
+5. this replaces the call to the WebR function we made in the last chapter 
+
+## Checking Our Local Package Work
+
+We'll now do another timed run of the executio of our new, local CLI tool:
+
+```bash
+$ time node index.mjs
+
+ -------------- 
+Hello from WebR + Node! 
+ --------------
+    \
+      \
+        \
+            |\___/|
+          ==) ^Y^ (==
+            \  ^  /
+             )=*=(
+            /     \
+            |     |
+           /| | | |\
+           \| | |_|/\
+      jgs  //_// ___/
+               \_)
+  
+
+node index.mjs  0.86s user 0.05s system 202% cpu 0.452 total
+```
+
+That's _much_ faster! It also doesn't require an internet connection to run the script.
+
+## Things To Try
+
+Apply the same suggested modification as you did in the previous chapter.
+
+## More Information
+
+Check out [Colin's blog on webrtools](https://colinfay.me/preloading-your-r-packages-in-webr-in-an-express-js-api/) to see how it was made.
+
+## Next Up
+
+In the next chapter we'll show how to get a bit fancier with command line arguments and make this CLI app callable without the `node …` silliness.

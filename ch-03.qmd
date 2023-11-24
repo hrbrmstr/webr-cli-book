@@ -17,7 +17,7 @@ We'll keep this chapter simple and use the [{cowsay}](https://cran.r-project.org
 
 I made a copy of the `hellow-webr` directory as `hello-pkgs` and modified the `package.json` accordingly:
 
-```{json, filename="ch-03/pacakge.json"}
+```{json, filename="ch-03/hello-pkgs/pacakge.json"}
 {
   "name": "hello-pkgs",
   "version": "0.1.0",
@@ -32,7 +32,7 @@ I made a copy of the `hellow-webr` directory as `hello-pkgs` and modified the `p
 
 Similary, `index.mjs` now looks like the following (only new features have annotations):
 
-```{js, eval=FALSE, filename= "ch-04/index.mjs"}
+```{js, eval=FALSE, filename= "ch-04/hello-pkgs/index.mjs"}
 import { WebR } from "webr";
 
 const webR = new WebR();
@@ -89,4 +89,4 @@ Give [Installing R Packages](https://docs.r-wasm.org/webr/latest/packages.html) 
 
 ## Next Up
 
-In the next chapter we'll cover how to store all those depended packages on the local filesystem and use them with WebR in Node.
+In the next chapter we'll cover how to store all those dependent packages on the local filesystem and use them with WebR in Node.

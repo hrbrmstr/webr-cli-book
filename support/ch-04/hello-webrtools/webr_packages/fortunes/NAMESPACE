@@ -1,0 +1,6 @@
+if(getRversion() >= "2.5.0") importFrom("utils", "read.table")
+importFrom("utils", "toLatex")
+
+export("fortune", "read.fortunes")
+S3method("print", "fortune")
+S3method("toLatex", "fortune")

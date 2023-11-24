@@ -1,0 +1,2 @@
+install-pkgs:
+  Rscript ./node_modules/webrtools/r/install.R cowsay

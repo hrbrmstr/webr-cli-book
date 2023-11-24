@@ -11,7 +11,7 @@ Since this book is about integrating WebR and Node, we should go ahead and start
 
 I made a copy of the `hello-node-cli` directory as `hello-webr` and modified the `package.json` accordingly:
 
-```{json, filename="ch-02/pacakge.json"}
+```{json, filename="ch-02/hello-webr/pacakge.json"}
 {
   "name": "hello-webr",
   "version": "0.1.0",
@@ -91,7 +91,7 @@ The [main WebR documentation site](https://docs.r-wasm.org/webr/latest/downloadi
 
 Replace the contents of `index.mjs` with the following code:
 
-```{js, eval=FALSE, filename="ch-02/index.mjs"}
+```{js, eval=FALSE, filename="ch-02/hello-webr/index.mjs"}
 import { WebR } from "webr"; // <1>
 
 const webR = new WebR(); // <2>

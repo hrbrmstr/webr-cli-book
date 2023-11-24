@@ -1,0 +1,191 @@
+---
+code-annotations: below
+code-fold: false
+engine: knitr
+--- 
+# Taking Your Web + Node CLI Global {.unnumbered}
+
+We now have a local-only WebR + Node CLI app that depends on a few external R packages.That's great, but nobody wants to type `cd $DIR && node index.mjs` to get stuff done.
+
+So, we'll show how to install the CLI package globally, and give it a handy single name to use when calling it.
+
+We will also use some extra Node help to make working with CLI paramaters a bit less "ugh", and add a more professional look/feel to our tool.
+
+## Leveling Up CLI Parameter Handling
+
+I made a copy of the `hello-pkgs` directory as `rcowsay` into a new directory. That also meant I did not have to redo any package installs.
+
+While it's fine to use built-in CLI argument processing tools, they get cumbersome pretty quickly. Thankfully, this is a very solved problem in Node-land. There are many packages that make working with CLI flags, arguments, and positional paraters dead simple. One of those is [`commander`](https://github.com/tj/commander.js#readme).
+
+We'll install it (`npm install commander`) and then ensure your `package.json` looks like this:
+
+```{json, filename="ch-05/rcowsay/pacakge.json"}
+{
+  "name": "rcowsay",
+  "version": "0.1.0",
+  "description": "Say things with animals",
+  "main": "index.mjs",
+  "type": "module",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "webr": "^0.2.2",
+    "webrtools": "^0.0.3"
+  }
+}
+```
+
+There are _many_ ways to configure `commander`. I'll show of them, here. Your `index.mjs` file will ultimately look something liks this:
+
+```{js, eval=FALSE, filename="ch-05/rcowsay/index.mjs"}
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import * as path from "path";
+import { loadPackages } from "./src/webrtools.mjs";
+import { Command } from "commander"; // <1>
+import { WebR } from "webr";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const program = new Command(); // <2>
+
+program
+	.name("rconsole") // <3>
+	.description("Say things with animals") // <3>
+	.version("0.1.0") // <3>
+	.option("-b, --by <what>", "which animal to use", "cat") // <4>
+	.arguments("<message>", "message to say") // <5>
+	.action(async (message, options) => {
+		const webR = new WebR();
+		await webR.init();
+
+		globalThis.webR = webR;
+
+		await loadPackages(webR, path.join(__dirname, "webr_packages"));
+
+		await webR.objs.globalEnv.bind("by", options.by); // <6>
+		await webR.objs.globalEnv.bind("what", message);  // <6>
+
+		await webR.evalRVoid(`cowsay::say(what = what, by = by)`); // <7>
+
+		process.exit(0);
+	})
+	.parse();
+```
+1. get access to `commander`
+2. initialize a new `Command` instance
+3. some nice boilerplate that will make using `--help` useful
+4. let folks pick an anmimal (default to `cat`)
+5. the remaining CLI (quoted) text will be our message
+6. make our strings available to the R context
+7. call R's `cowsay` with the input values
+
+Let's test that out before "going global":
+
+```bash
+$ node index.mjs --by=yoda "The bees knees, Webr cowsay is."
+ ----- 
+The bees knees, Webr cowsay is. 
+ ------ 
+    \   
+     \
+                   ____
+                _.' :  `._
+            .-.'`.  ;   .'`.-.
+   __      / : ___\ ;  /___ ; \      __
+  ,'_ ""--.:__;".-.";: :".-.":__;.--"" _`,
+  :' `.t""--.. '<@.`;_  ',@>` ..--""j.' `;
+       `:-.._J '-.-'L__ `-- ' L_..-;'
+          "-.__ ;  .-"  "-.  : __.-"
+             L ' /.------.\ ' J
+             "-.   "--"   .-"
+             __.l"-:_JL_;-";.__
+         .-j/'.;  ;""""  / .'\"-.
+         .' /:`. "-.:     .-" .';  `.
+      .-"  / ;  "-. "-..-" .-"  :    "-.
+  .+"-.  : :      "-.__.-"      ;-._   \
+  ; \  `.; ;                    : : "+. ;
+  :  ;   ; ;                    : ;  : \:
+  ;  :   ; :                    ;:   ;  :
+  : \  ;  :  ;                  : ;  /  ::
+  ;  ; :   ; :                  ;   :   ;:
+  :  :  ;  :  ;                : :  ;  : ;
+  ;\    :   ; :                ; ;     ; ;
+  : `."-;   :  ;              :  ;    /  ;
+ ;    -:   ; :              ;  : .-"   :
+  :\     \  :  ;            : \.-"      :
+  ;`.    \  ; :            ;.'_..--  / ;
+  :  "-.  "-:  ;          :/."      .'  :
+   \         \ :          ;/  __        :
+    \       .-`.\        /t-""  ":-+.   :
+     `.  .-"    `l    __/ /`. :  ; ; \  ;
+       \   .-" .-"-.-"  .' .'j \  /   ;/
+        \ / .-"   /.     .'.' ;_:'    ;
+  :-""-.`./-.'     /    `.___.'
+               \ `t  ._  /  bug
+                "-.t-._:'
+```
+
+## Going Global
+
+Now that we have this working locally, let's install it so we can call it like any CLI tool.
+
+First, add this line to the top of `index.mjs`:
+
+```bash
+#!/usr/bin/env node
+```
+
+Next, ensure that `index.mjs` is executable. On real operating systems, that's a call to something like:
+
+```bash
+$ chmod 755 index.mjs
+```
+
+Finally, we need to add these lines to `package.json`:
+
+```{json, eval=FALSE}
+  "bin": {
+    "rcowsay": "index.mjs"
+  },
+```
+
+Once all that is done, we can install this globally via:
+
+```bash
+$ npm install -g .
+```
+
+In a new shell, try it out:
+
+```bash
+$  rcowsay "meow"
+ --------------
+meow
+ --------------
+    \
+      \
+        \
+            |\___/|
+          ==) ^Y^ (==
+            \  ^  /
+             )=*=(
+            /     \
+            |     |
+           /| | | |\
+           \| | |_|/\
+      jgs  //_// ___/
+               \_)
+```
+
+## Things To Try
+
+R's {cowsay} has [_many_ options](https://cran.r-hub.io/web/packages/cowsay/vignettes/cowsay_tutorial.html). Add support for them!
+
+## More Information
+
+To learn more about what you can do with `commander`, hit up the above GitHub link or check out "[Node JS CLI Tool with Commander - Ian Rufus](https://ianrufus.com/blog/2019/09/node-cli-commander/)". This post demonstrates how to create a basic CLI tool in Node.js using Commander.js. It covers initializing a new NPM package, installing Commander, and creating a simple command.
+
+## Next Up
+
+All our work is still local, so in the next chapter we'll show how to install this package from a Git URL and also how to publish it on NPM.
