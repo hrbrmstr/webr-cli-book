@@ -6,7 +6,7 @@
   --quarto-border-width: 1px;
   --quarto-border-radius: 0.25rem;
   --bs-body-color: #fff;
-  --quarto-font-monospace: "Fira Code", Inconsolata, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --quarto-font-monospace: "Monaspace Radon Var", Inconsolata, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-variant-ligatures: discretionary-ligatures;
   color-scheme: dark;
 }

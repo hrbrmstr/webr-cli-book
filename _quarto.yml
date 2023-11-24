@@ -9,6 +9,9 @@ book:
   title: "Making Portable CLIs With WebR"
   site-url: https://webr-cli.hrbrmstr.dev/
   search: true
+  twitter-card: true
+  comments:
+    hypothesis: true
   favicon: static/favicon.ico
   author: "@hrbrmstr"
   date: "2023-11-24"
@@ -26,6 +29,7 @@ format:
     include-in-header: 
       - static/incl.html
     monofont: "Monaspace Radon Var"
+    mainfont: "Inter"
     code-tools: true
     code-fold: true
     code-copy: true
