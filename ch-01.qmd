@@ -1,0 +1,87 @@
+---
+code-annotations: below
+code-fold: false
+engine: knitr
+--- 
+# Setting Up Your Environment {.unnumbered}
+
+To work with the examples in this book you will need [Node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (hereafter referred to as Node) installed. You can find installation steps at [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm). I recommend using version 18.x.y or higher, and you can manage multiple Node installations using [nvm](https://github.com/nvm-sh/nvm).
+
+You will also need a good editor and [Sublime Text](https://www.sublimetext.com/), [Neovim](https://github.com/neovim/neovim), and [VS Code](https://code.visualstudio.com/) are all good choices, but what is most important is that you choose one that has robust direct or package support for JavaScript/TypeScript, since that will save you quite a bit of context switching when you need to know the signatgure of a given function/data structure.
+
+All of the examples in the book will be in a `support` directory of the book's repository (link TBD). Since this book was made with [Quarto](https://quarto.org/), the majority of the examples you will see are directly run from this diretory using a `bash` {knitr} shell.
+
+## Your First Node CLI
+
+Before we dive into integrating WebR into your project, let's see how to write a simple Node CLI. I used:
+
+```{bash}
+#| eval: false
+$ mkdir support/ch-01-hello-node-cli # <1>
+$ cd support/ch-01-hello-node-cli    # <2>
+$ npm init -y                        # <3>
+$ touch index.mjs                    # <4>
+```
+1. create a directory to hold the cli project
+2. move to it 
+3. initialize the project (this creates a sparse "package.json" file)
+4. create the JavaScript module file that will be the entry point for the CLI
+
+The `.mjs` means we'll be using [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), which is a more modern way to write modular JavaScript. We need to let Node know this so, now, edit `package.json` to make it look like this (which will result in an an even more minimal version of the file):
+
+```{json, filename="ch-01/pacakge.json"}
+{
+  "name": "hello-node-cli",
+  "version": "0.1.0",
+  "description": "basic node cli example",
+  "main": "index.mjs",
+  "type": "module"
+}
+```
+Then, edit `index.mjs` and make it look like this:
+
+```{js, eval=FALSE, filename="ch-01/index.mjs"}
+import { basename } from 'path' // <1>
+
+if (process.argv.length > 2) {  // <2>
+  console.log(`Hello, ${process.argv[ 2 ]}`); // <2>
+  process.exit(0); // <2>
+} else {
+  console.log(`Usage: ${process.argv.slice(0, 2).map(d => basename(d)).join(" ")} <parameter>`); // <3>
+}
+```
+1. the `basename` function does what it does in R and shell (returns the last path element)
+2. if we have a parameter, print a greeting and exit
+3. otherwise, print the usage message
+
+Now, when you run it with or without params, here's what you'll see:
+
+```{bash}
+#| eval: false
+$ node index.mjs from-param
+Hello, from-param
+```
+```{bash}
+#| eval: false
+$ node index.mjs
+Usage: node index.mjs <parameter>
+```
+
+There are many third-party packages that make working with CLI flags, arguments, and parameters much easier than relying on the Node internals, and we'll use them in subsequent chapters.
+
+## Things To Try
+
+To get a feel for working in JavaScript:
+
+- Try requiring more parameters and printing them out
+- Perhaps perform some conditional logic to print different things out based on the input
+
+## More Information
+
+Keep [this guide to Node CLI best practices](https://github.com/lirantal/nodejs-cli-apps-best-practices) handy as we create increasingly complex Node+WebR projects.
+
+Also, [read up on NPM](https://docs.npmjs.com/about-npm) if you are not already steeped in the JavaScript ecosystem.
+
+## Next Up
+
+In the next chapter we'll be showing how to incorporate WebR into a very basic Node CLI.

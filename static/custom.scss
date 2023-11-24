@@ -1,0 +1,58 @@
+/* design system colors */
+// text
+
+$hrbrgreen: #142933;
+$hrbrwhite: #fff;
+$gray-100: #e3e3e3;
+$gray-300: #ABABAB;
+// borders & dividers
+$gray-600: #2F2F2F;
+// surfaces
+$gray-700: #1F1F1F;
+$gray-800: #171717;
+$gray-900: #121212;
+
+/*-- scss:defaults --*/
+
+$body-bg: $hrbrgreen !default;
+$body-color: $hrbrwhite !default;
+$headings-color: $hrbrwhite !default;
+$code-block-bg: lighten($body-bg, 3%) !default;
+$navbar-bg: $hrbrgreen !default;
+$navbar-hl: $hrbrwhite !default;
+
+$link-color: $body-color !default;
+$link-shade-percentage: 15% !default;
+$link-hover-color: $hrbrwhite !default;
+
+$code-color: darken($body-color, 10%) !default;
+$code-bg: lighten($body-bg, 10%) !default;
+
+$card-border-color: $gray-600 !default;
+$form-select-border-color: $gray-600 !default;
+
+@font-face {
+  font-family: "Monaspace Radon Var";
+  src: url('static/fonts/MonaspaceRadonVarVF[wght,wdth,slnt].woff2') format('woff2'),
+    url('static/fonts/MonaspaceRadonVarVF[wght,wdth,slnt].woff') format('woff');
+}
+
+@import url('/static/fonts/fonts.css');
+
+$font-monospace: "Monaspace Radon Var", Inconsolata, monospace;
+$headings-font-family: Inter, serif !default;
+$font-family-base: Inter;
+
+/*-- scss:rules --*/
+
+:root {
+  color-scheme: dark;
+  font-variant-ligatures: common-ligatures;
+  --bs-body-color: $hrbrwhite;
+  --quarto-font-monospace: "Monaspace Radon Var", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+code {
+  font-variant-ligatures: discretionary-ligatures;
+  font-family: "Monaspace Radon Var", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}

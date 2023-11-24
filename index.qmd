@@ -1,0 +1,15 @@
+# Preface {.unnumbered}
+
+This book is designed to guide you through the process of building portable Command Line Interface (CLI) applications using [WebR](https://docs.r-wasm.org/webr/latest/) 0.2.2+ and Node.js. 
+
+CLI applications have been a foundational element in the developer's toolkit for decades, offering a direct way to perform tasks without the need for a graphical user interface. They are often the core tools for automating tasks, such as deploying production applications, running tests, building reports, migrating data, and more. With the rise of JavaScript and Node.js, building these utilities has never been more accessible. 
+
+WebR, a recent addition to the R ecosystem, brings the power of R to the web. With the release of WebR 0.2.2, developers can integrate WebR in their own JavaScript or TypeScript environments, including Node.js. This opens up a cross-platform universe of possibilities for data manipulation, statistical modeling, and more, all within the context of a CLI application.
+
+Node.js, an open-source runtime environment built on Chrome's V8 JavaScript engine, is known for its event-driven and non-blocking I/O model. This makes Node.js lightweight, efficient, and extremely fast for building applications and executing web development services. It has built-in libraries for reading and writing files, launching other applications, and basic network communication, making it a great solution for writing CLI apps.
+
+The combination of WebR and Node.js allows for the creation of powerful, portable CLI applications. Portable applications have the advantage of being easily moved between different computers by just copying the program folder, since no installation is required. They can also be installed with a single command from in-house or internet-based package repositories. This makes them ideal for use in a variety of environments and systems.
+
+This book is designed to be a comprehensive guide to building portable CLI applications with WebR 0.2.2+ and Node.js. It will cover everything from the basics of CLI application development, to integrating WebR and Node.js, to creating portable applications that can be easily distributed and used across different systems. 
+
+Whether you're a seasoned developer looking to expand your skill set, or a newcomer to the world of CLI applications, this book will provide you with the knowledge and skills you need to create powerful, portable CLI applications with WebR 0.2.2+ and Node.js.

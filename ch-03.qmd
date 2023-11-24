@@ -1,0 +1,92 @@
+---
+code-annotations: below
+code-fold: false
+engine: knitr
+--- 
+# Using WebR WASM-built Packages In Your Node CLI {.unnumbered}
+
+Base R installs come with many goodies, but one aspect of R that makes it so useful is the vast ecosystem of packages that extend the core functionality.
+
+As of the timestamp on the book, WebR has successfully built nearly half of the packages on CRAN, so there's a decent chance what you need is available.
+
+Let's see how to naively use the same idioms that the actual web-version of WebR uses to incorporate packages into web-based JavaScript programs.
+
+## Cowsay, You Say?
+
+We'll keep this chapter simple and use the [{cowsay}](https://cran.r-project.org/package=cowsay) package to output some text to the console.
+
+I made a copy of the `hellow-webr` directory as `hello-pkgs` and modified the `package.json` accordingly:
+
+```{json, filename="ch-03/pacakge.json"}
+{
+  "name": "hello-pkgs",
+  "version": "0.1.0",
+  "description": "basic node and webr cli example that uses other packages",
+  "main": "index.mjs",
+  "type": "module",
+  "dependencies": {
+    "webr": "^0.2.2"
+  }
+}
+```
+
+Similary, `index.mjs` now looks like the following (only new features have annotations):
+
+```{js, eval=FALSE, filename= "ch-04/index.mjs"}
+import { WebR } from "webr";
+
+const webR = new WebR();
+await webR.init();
+
+await webR.installPackages([ 'cowsay' ], { quiet: true }) // <1>
+
+await webR.evalRVoid(`cowsay::say("Hello from WebR + Node!")`); // <2>
+
+process.exit(0)
+```
+1. tell WebR to download and make the {cowsay} package available to us
+2. have {cowsay} say something to stdout
+
+Here's the output of that on one of my systems:
+
+```bash
+$ time node index.mjs
+
+ -------------- 
+Hello from WebR + Node! 
+ --------------
+    \
+      \
+        \
+            |\___/|
+          ==) ^Y^ (==
+            \  ^  /
+             )=*=(
+            /     \
+            |     |
+           /| | | |\
+           \| | |_|/\
+      jgs  //_// ___/
+               \_)
+  
+
+node index.mjs  2.85s user 1.06s system 151% cpu 2.580 total
+```
+
+That took a bit more time than the example in the previous chapter! This is due to WebR needing to download the {cowsay} package from the internet each time we run the program. This is super inefficient and quite unnecessary, so we'll avoid getting you used to this bad practice and see how to improve upon it in the next chapter.
+
+## Things To Try
+
+Before moving on:
+
+- see what happnes if you make `quiet: false` in the call to `installPackages`
+- incorporate what you learned about command line parameters in "Setting Up Your Environment" and let the caller pass in something for {cowsay} to say
+- bonus points if you also provide a way for the caller to specify `cowsay::say()`'s `by` parameter.
+
+## More Information
+
+Give [Installing R Packages](https://docs.r-wasm.org/webr/latest/packages.html) at least a skim before continuing so you can fully appreciate the differences between what we will be doing and what we just did.
+
+## Next Up
+
+In the next chapter we'll cover how to store all those depended packages on the local filesystem and use them with WebR in Node.

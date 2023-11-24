@@ -1,0 +1,10 @@
+{
+  "name": "hello-webr",
+  "version": "0.1.0",
+  "description": "basic node and webr cli example",
+  "main": "index.mjs",
+  "type": "module",
+  "dependencies": {
+    "webr": "^0.2.2"
+  }
+}

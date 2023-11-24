@@ -1,0 +1,143 @@
+---
+code-annotations: below
+code-fold: false
+engine: knitr
+--- 
+# Adding WebR To Your Node CLI {.unnumbered}
+
+Since this book is about integrating WebR and Node, we should go ahead and start that integration.
+
+## Adding The WebR NPM Package
+
+I made a copy of the `hello-node-cli` directory as `hello-webr` and modified the `package.json` accordingly:
+
+```{json, filename="ch-02/pacakge.json"}
+{
+  "name": "hello-webr",
+  "version": "0.1.0",
+  "description": "basic node and webr cli example",
+  "main": "index.mjs",
+  "type": "module"
+}
+```
+
+We need to get WebR installed. It lives [in NPM](https://www.npmjs.com/package/webr), so all we need to do is be in the project directory and:
+
+```{bash}
+#| eval: false
+$ npm install webr --silent
+```
+
+There are _many_ shortcuts you can take vs. type out `install` every time:
+
+`aliases: add, i, in, ins, inst, insta, instal, isnt, isnta, isntal, isntall`
+
+and, we're using `--silent` to reduce the spam that comes from these installs. We won't always do that, but — for now — it's just a distraction. Feel empowered to remove that and see what hits the console.
+
+Quite a bit comes for the ride with that command, and you should poke at all the other modules WebR includes as part of its distribution:
+
+```bash
+$ tree -L 1 node_modules
+node_modules
+├── @codemirror
+├── @esbuild
+├── @lezer
+├── @msgpack
+├── ansi-regex
+├── buffer-from
+├── classnames
+├── codemirror
+├── codemirror-lang-r
+├── crelt
+├── detect-libc
+├── emoji-regex
+├── esbuild
+├── fsevents
+├── get-tsconfig
+├── is-fullwidth-code-point
+├── js-tokens
+├── lezer-r
+├── lightningcss
+├── lightningcss-darwin-arm64
+├── loose-envify
+├── object-assign
+├── prop-types
+├── react
+├── react-accessible-treeview
+├── react-dom
+├── react-icons
+├── react-is
+├── resolve-pkg-maps
+├── scheduler
+├── source-map
+├── source-map-support
+├── string-width
+├── strip-ansi
+├── style-mod
+├── tsx
+├── w3c-keyname
+├── webr
+├── xmlhttprequest-ssl
+├── xterm
+├── xterm-addon-fit
+└── xterm-readline
+```
+
+We won't need most of those for our CLI tool, and we'll show how to trim down a deployment much later in this book.
+
+## Incorporating WebR Into `index.mjs`
+
+The [main WebR documentation site](https://docs.r-wasm.org/webr/latest/downloading.html) is a great reference, but it's geared towards using WebR online. Many of the same idioms work in a CLI context, but you should keep in mind that if something isn't working, it may not "be you".
+
+Replace the contents of `index.mjs` with the following code:
+
+```{js, eval=FALSE, filename="ch-02/index.mjs"}
+import { WebR } from "webr"; // <1>
+
+const webR = new WebR(); // <2>
+await webR.init();       // <3>
+
+let result = await webR.evalR(`set.seed(1999); sample(100, 20)`); // <4>
+
+console.log(await result.toJs()); // <5>
+
+webR.destroy(result); // <6>
+
+process.exit(0); // <7>
+```
+1. import the [`WebR` class](https://docs.r-wasm.org/webr/latest/api/js/classes/WebR.WebR.html) into the local namespace
+2. create a new WebR object from the class
+3. initialize it
+4. do something that is R-specific
+5. convert the Proxy object into a JavaScript oject and display it
+6. clean up
+7. exit the script
+
+When you run the script it should provide this output: 
+
+```bash
+$ node index.mjs
+{
+  type: 'integer',
+  names: null,
+  values: [
+    36, 93, 100, 50, 97, 22, 55,
+    29, 96,  75, 71, 24, 45, 46,
+    42, 86,  90, 12, 30, 15
+  ]
+}
+```
+
+One thing you should notice is how fast that operation executed. I won't put timings in this chapter, but on modern systems, there should almost be no noticeable delay after hitting enter/return. That's one other aspect that makes using WebR in Node very compelling.
+
+## Things To Try
+
+Pick some other functions in base R packages that do not have quick/easy JavaScript equivalents and try executing some of that code. 
+
+## More Information
+
+Read up on "[Evaluating R Code](https://docs.r-wasm.org/webr/latest/evaluating.html)", "[Converting R Objects To JavaScript](https://docs.r-wasm.org/webr/latest/convert-r-to-js.html)", and "[Creating R Object From JavaScript](https://docs.r-wasm.org/webr/latest/convert-js-to-r.html)" so you can more easily keep up with the following chapters.
+
+## Next Up
+
+In the next chapter we'll cover the naive way to use packages in your CLI code before moving on to more sophisticated ones.

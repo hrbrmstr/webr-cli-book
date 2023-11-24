@@ -1,0 +1,36 @@
+project:
+  type: book
+
+resources:
+  - "static/*"
+  - "static/fonts/*"
+
+book:
+  title: "Making Portable CLIs With WebR"
+  site-url: https://webr-cli.hrbrmstr.dev/
+  search: true
+  favicon: static/favicon.ico
+  author: "@hrbrmstr"
+  date: "2023-11-24"
+  repo-url: https://gitlab.com/hrbrmstr/webr-cli-book/
+  page-footer: "Copyright ©️ 2023, boB Rudis"
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - ch-01.qmd
+    - ch-02.qmd
+    - ch-03.qmd
+
+format:
+  html:
+    include-in-header: 
+      - static/incl.html
+    monofont: "Monaspace Radon Var"
+    code-tools: true
+    code-fold: true
+    code-copy: true
+    highlight-style: ayu-dark
+    theme: 
+      - cosmo
+      - static/custom.scss
+    css: static/custom.css
