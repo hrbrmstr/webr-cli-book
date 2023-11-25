@@ -1,0 +1,6 @@
+install-pkgs:
+  Rscript ./node_modules/webrtools/r/install.R ggplot2
+  Rscript ./node_modules/webrtools/r/install.R showtext
+  
+run:
+  node index.mjs

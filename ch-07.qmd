@@ -25,26 +25,26 @@ This is the core of `index.mjs` that uses that script:
 
 ```{js, eval=FALSE, filename="ch-07/webr-scrape/index.mjs"}
 program
-	.name("doj-scraper")
-	.description("scrape the DoJ Jan 6 table to ndjson")
-	.version("0.1.0")
-	.action(async () => {
-		const webR = new WebR();
-		await webR.init();
+  .name("doj-scraper")
+  .description("scrape the DoJ Jan 6 table to ndjson")
+  .version("0.1.0")
+  .action(async () => {
+    const webR = new WebR();
+    await webR.init();
 
-		globalThis.webR = webR;
+    globalThis.webR = webR;
 
-		await loadPackages(webR, path.join(__dirname, "webr_packages"));
+    await loadPackages(webR, path.join(__dirname, "webr_packages"));
 
-		// mount our local "scripts" folder
+    // mount our local "scripts" folder
     await webR.FS.mkdir(`/scripts`) // <1>
     await webR.FS.mount("NODEFS", { root: path.join(__dirname, 'scripts') }, `/scripts`); // <1>
 
-		// source the script
-		await webR.evalRVoid(`source("/scripts/doj-scrape.R")`); // <2>
+    // source the script
+    await webR.evalRVoid(`source("/scripts/doj-scrape.R")`); // <2>
 
-		process.exit(0);
-	});
+    process.exit(0);
+  });
 ```
 1. mount the `scripts` directory
 2. source/run the R script
@@ -65,5 +65,5 @@ Once someone does an `npm i -g` of this code, that R script is out in the cold, 
 
 ## Next Up
 
-We go back to our regularly scheduled programming in the next chapter and look at how to embed a [toy] model into our CLI, let the user ask a question, and have it write results out back to the filesystem.
+We go back to our regularly scheduled programming in the next chapter and see if we can make an example plot generator you and your teammates can use without local R being around.
 

@@ -1,0 +1,15 @@
+{
+  "name": "doj-scraper",
+  "version": "0.1.0",
+  "description": "Scrape the DoJ Jan 6 table to ndjson",
+  "main": "index.mjs",
+  "type": "module",
+  "bin": {
+    "doj-scraper": "index.mjs"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "webr": "^0.2.2",
+    "webrtools": "^0.0.3"
+  }
+}
