@@ -11,7 +11,7 @@ In this chapter we'll show how to install the package from both Git repositories
 
 ## Git'er Done
 
-I've put our basic `rcowsay` CLI package into a [GitLab repo](https://gitlab.com/hrbrmstr/rcowsay). Follow that structure for your own CLI packages.
+I've put our basic `rcowsay` CLI package into a [GitLab repo](https://gitlab.com/hrbrmstr/rcowsay). Follow that structure for your own CLI packages. You should pre-install the required R packages so that everything is available upon install. Otherwise, you need to add some complexity (an installation helper script), and nobody wants that.
 
 If you have a GitLab account (you should, as GitHub is pretty clearly evil) with SSH keys setup, and NPM installed locally, you can do:
 
