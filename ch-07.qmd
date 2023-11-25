@@ -1,0 +1,69 @@
+---
+code-annotations: below
+code-fold: false
+engine: knitr
+--- 
+# Interlude: First Practical Example {.unnumbered}
+
+One of my few, remaining GitHub Actions is a [daily scraper of the FBI's running list of traitorous Jan. 6 insurrectionists being brought to justice](https://github.com/hrbrmstr/capitol-breach-scraper-and-data/tree/main). NPR and others are doing something similar but we need as many preserved copies of this data for lots of reasons inappropriate to into here.
+
+An argument _can_ be made that the only thing we should be using WebR at the CLI for is all of the stats/ML bits one can do with R that are still hard to do in other languages. Said argument continues that one should "just port" the "lesser" acquisition and wrangling code to whatever brutish language those ops work "better" in.
+
+This is a _terrible_ argument.
+
+Take a look at [that scraper code](https://github.com/hrbrmstr/capitol-breach-scraper-and-data/blob/main/doj-case-scraper.R). It's been nurtured and tweaked across years, now, due to the daft way the Feds make that table (props to DHS/CISA for at least giving me either JSON or CSV data for their Known Exploited Vulnerabilities catalog). There's _no_ way I'm going to port that, _or_ ask some LLM/GPT to give it a try. It's not worth my time.
+
+So, how to make it a CLI I can use any time (and, perhaps replace the GitHub action for something more lightweight?).
+
+## Use The `source()`
+
+We can use the same "hack" that Colin did for package loading with keeping R code a bit more self-contained than sprawling all through the JavaScript code.
+
+In `ch-07/webr-scrape` you'll see a new directory called `scripts` with one entry: `doj-scrape.R` which is a slightly modified version of the code in GitHub. This one just does the scraping/wrangling and shunts the ndjson to `stdout`.
+
+This is the core of `index.mjs` that uses that script:
+
+```{js, eval=FALSE, filename="ch-07/webr-scrape/index.mjs"}
+program
+	.name("doj-scraper")
+	.description("scrape the DoJ Jan 6 table to ndjson")
+	.version("0.1.0")
+	.action(async () => {
+		const webR = new WebR();
+		await webR.init();
+
+		globalThis.webR = webR;
+
+		await loadPackages(webR, path.join(__dirname, "webr_packages"));
+
+		// mount our local "scripts" folder
+    await webR.FS.mkdir(`/scripts`) // <1>
+    await webR.FS.mount("NODEFS", { root: path.join(__dirname, 'scripts') }, `/scripts`); // <1>
+
+		// source the script
+		await webR.evalRVoid(`source("/scripts/doj-scrape.R")`); // <2>
+
+		process.exit(0);
+	});
+```
+1. mount the `scripts` directory
+2. source/run the R script
+
+The `justfile` has a few more package installs, and `package.json` will install a utility named `doj-scraper` that can be run at any time.
+
+By keeping the R files separate from the inline JavaScript code, we get the crunchy goodness of syntax highlighting, and even test running it with the local R installation.
+
+## Things To Try
+
+Augment my script to tell the caller what it's doing along the way. Perhaps with the {cli} R package.
+
+## More Information
+
+This is more a "be careful" message than an external resource.
+
+Once someone does an `npm i -g` of this code, that R script is out in the cold, cruel, dangerous filesystem of a machine you possibly do not control. Be careful to leave no secrets in place, and ensure the script does not run with elevated permissions. 
+
+## Next Up
+
+We go back to our regularly scheduled programming in the next chapter and look at how to embed a [toy] model into our CLI, let the user ask a question, and have it write results out back to the filesystem.
+

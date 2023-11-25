@@ -73,4 +73,4 @@ O'Reilly has a [pretty good, but older, book on this topic](https://www.oreilly.
 
 ## Next Up
 
-We've got packages handled, and tossed some simple data into a WebR context, but how do we pre-load data for WebR to use and how should we handle remote data sources for our CLI tools? We'll cover that in the next chapter.
+We've got packages handled, command line arguments wrangled, ,and tossed some simple data into a WebR context. In the next chapter we take an interlude to WebR CLI-ify one of my daily scraping jobs.

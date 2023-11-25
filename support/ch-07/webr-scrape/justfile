@@ -1,0 +1,9 @@
+install-pkgs:
+  Rscript ./node_modules/webrtools/r/install.R lubridate
+  Rscript ./node_modules/webrtools/r/install.R rvest
+  Rscript ./node_modules/webrtools/r/install.R dplyr
+  Rscript ./node_modules/webrtools/r/install.R purrr
+  Rscript ./node_modules/webrtools/r/install.R tidyr
+
+run:
+  node index.mjs
