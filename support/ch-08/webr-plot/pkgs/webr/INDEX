@@ -1,0 +1,15 @@
+canvas                  Graphics device for drawing to a HTML canvas
+                        element
+canvas_install          Use the webR canvas graphics device
+eval_js                 Evaluate JavaScript code
+eval_r                  Evaluate R code for webR
+global_prompt_install   Prompt user to install missing packages from a
+                        webR binary repo
+install                 Install one or more packages from a webR binary
+                        package repo
+mount                   Mount an Emscripten filesystem object
+pager_install           Generate an output message when file is
+                        displayed with the pager
+shim_install            Shim functions from base R
+test_package            Test an installed R package by running the
+                        package examples and tests
