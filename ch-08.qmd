@@ -140,6 +140,8 @@ There's nothing special about the R script that is run, so we won't take up any 
 
 Change directory to `ch-08/webr-plot`, do an `npm i -g .` and you can start watching where the tremors are!
 
+You can (and, should!) take a look at the complete source code and supporting files [over at the GitLab repository for this chapter](https://gitlab.com/hrbrmstr/webr-cli-book/-/tree/main/support/ch-08/webr-plot).
+
 ## Things To Try
 
 Add options to let folks customize the plot, such as:
