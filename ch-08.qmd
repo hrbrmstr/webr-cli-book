@@ -115,7 +115,7 @@ It does callers of your CLI almost no good if you shunt plots to somewhere deep 
 
 It defaults to the current working directory of the user if a directory is not specified.
 
-### Using Local And Downloaded GeoJSON/Shapefiles
+## Using Local And Downloaded GeoJSON/Shapefiles
 
 This project also has a local `data` folder we'll map to WebR via:
 
