@@ -125,7 +125,7 @@ await makeAndMount(webR, appDir('data'), '/data')
 
 There are a couple GeoJSON files you can play with in there. We just use one of them in the project.
 
-We also need to fetch the [24 hour magnitude 2.5+ feed](https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson) from the USGS, and we do that via `fetc()` on the JS-side, then shunt it into a global varaible that `sf::read_sf()` can use:
+We also need to fetch the [24 hour magnitude 2.5+ feed](https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson) from the USGS, and we do that via `fetch()` on the JS-side, then shunt it into a global varaible that `sf::read_sf()` can use:
 
 ```{js, eval=FALSE}
 const quakesGeoJSON = await fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson")
