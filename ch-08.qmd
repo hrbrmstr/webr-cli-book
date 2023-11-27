@@ -97,7 +97,7 @@ await webR.evalRVoid(`.libPaths(c("/pkgs", .libPaths()))`)
 
 ## It's Fontastic!
 
-WebR expects to find additional fonts in `/home/web_user/fonts`. We can bundle fonts with our Node CLI and mount this directory. I've included the latest version of the [Inter](https://rsms.me/inter/#features) font, along with a fun ["earthquakes" font](https://www.fontspace.com/earthquake-mf-font-f5799) just to show the possibilities. They're in `ch-08/webr-plot/fonts`.
+WebR expects to find additional fonts in `/home/web_user/fonts`. We can bundle (TTF) fonts with our Node CLI and mount this directory. I've included the latest version of the [Inter](https://rsms.me/inter/#features) font, along with a fun ["earthquakes" font](https://www.fontspace.com/earthquake-mf-font-f5799) just to show the possibilities. They're in `ch-08/webr-plot/fonts`.
 
 We'll make use of another helper utility function `appDir()` which provides a shortcut to figuring out where our CLI app got installed so we can access those resources:
 
