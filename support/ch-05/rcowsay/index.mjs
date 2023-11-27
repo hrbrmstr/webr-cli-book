@@ -19,17 +19,17 @@ program
   .arguments("<message>", "message to say")
   .action(async (message, options) => {
 
-		const webR = new WebR();
-		await webR.init();
+    const webR = new WebR();
+    await webR.init();
 
-		globalThis.webR = webR;
+    globalThis.webR = webR;
 
-		await loadPackages(webR, path.join(__dirname, 'webr_packages'))
+    await loadPackages(webR, path.join(__dirname, 'webr_packages'))
 
-		await webR.objs.globalEnv.bind('by', options.by)
-		await webR.objs.globalEnv.bind('what', message)
+    await webR.objs.globalEnv.bind('by', options.by)
+    await webR.objs.globalEnv.bind('what', message)
 
-		await webR.evalRVoid(`cowsay::say(what = what, by = by)`); 
+    await webR.evalRVoid(`cowsay::say(what = what, by = by)`); 
 
     process.exit(0)
 

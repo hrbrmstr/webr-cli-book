@@ -1,15 +1,14 @@
 {
-  "name": "doj-scraper",
+  "name": "quake-plot",
   "version": "0.1.0",
-  "description": "Scrape the DoJ Jan 6 table to ndjson",
+  "description": "Plot magnitude 2.5+ quakes that have happened in the last day",
   "main": "index.mjs",
   "type": "module",
   "bin": {
-    "doj-scraper": "index.mjs"
+    "quake-plot": "index.mjs"
   },
   "dependencies": {
     "commander": "^11.1.0",
-    "webr": "^0.2.2",
-    "webrtools": "^0.0.3"
+    "webr": "^0.2.2"
   }
 }

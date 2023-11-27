@@ -4,17 +4,23 @@ suppressPackageStartupMessages({
   library(dplyr)
 })
 
-quakes <- st_read(quakes_json, quiet=TRUE)
-land <- st_read("/data/ne_110m_admin_0_countries.geojson", crs = st_crs(quakes))
+suppressWarnings(quakes <- st_read(quakes_json, quiet = TRUE))
+suppressWarnings(land <- st_read("/data/ne_110m_admin_0_countries.geojson", crs = st_crs(quakes), quiet = TRUE))
 
-png("/plots/quakes.png", width = 1800, height = 1200, units = "px")
+png(
+  filename = sprintf("/plots/%s-quakes.png", Sys.Date()),
+  width = 1200, 
+  height = 800,
+  units = "px"
+)
 
 ggplot() +
   geom_sf(
     data = land,
-    fill = "#c3c3c3",
+    fill = "#e1e1e1",
+    color = "#2b2b2b",
     linewidth = 0.125,
-    color = "#3c3c3c"
+    size = 0.125
   ) +
   geom_sf(
     data = quakes,
@@ -26,7 +32,7 @@ ggplot() +
     name = "Magnitude",
     option = "magma"
   ) +
-  scale_size_continuous(
+  scale_radius(
     name = "Magnitude",
     trans = "sqrt"    
   ) +
@@ -42,14 +48,15 @@ ggplot() +
     caption = sprintf("Source: <https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson>\nData download: %s", Sys.time())
   ) +
   theme_minimal(
-    base_family = "Quakes"
+    base_family = "Inter"
   ) +
   theme(
-    panel.background = element_rect(fill = "skyblue", color = "skyblue"),
     plot.title = element_text(family = "Earthquake MF", size = 28, face = "bold", margin = margin(b=10)),
     plot.subtitle = element_text(size = 20, face = "plain", margin = margin(b=15)),
     plot.caption = element_text(margin = margin(t=10)),
-    plot.margin = margin(30, 30, 30, 30)
+    plot.margin = margin(30, 30, 30, 30),
+    panel.background = element_rect(fill = "skyblue", color = "skyblue"),
+    panel.grid.major = element_line(linewidth = 0.25)
   ) -> gg
 
 plot(gg)

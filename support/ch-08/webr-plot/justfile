@@ -1,19 +1,9 @@
+setup:
+  npm i webr commander
+  npm i -g pkgtrap
+
 install-pkgs:
-  Rscript ./node_modules/webrtools/r/install.R dplyr
-  Rscript ./node_modules/webrtools/r/install.R ggplot2
-  Rscript ./node_modules/webrtools/r/install.R MASS
-  Rscript ./node_modules/webrtools/r/install.R class
-  Rscript ./node_modules/webrtools/r/install.R proxy
-  Rscript ./node_modules/webrtools/r/install.R e1071
-  Rscript ./node_modules/webrtools/r/install.R KernSmooth
-  Rscript ./node_modules/webrtools/r/install.R classInt
-  Rscript ./node_modules/webrtools/r/install.R DBI
-  Rscript ./node_modules/webrtools/r/install.R magrittr
-  Rscript ./node_modules/webrtools/r/install.R Rcpp
-  Rscript ./node_modules/webrtools/r/install.R wk
-  Rscript ./node_modules/webrtools/r/install.R s2
-  Rscript ./node_modules/webrtools/r/install.R units
-  Rscript ./node_modules/webrtools/r/install.R sf
+  pkgtrap dplyr ggplot2 sf
   
 run:
   node index.mjs
