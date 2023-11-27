@@ -65,5 +65,5 @@ Once someone does an `npm i -g` of this code, that R script is out in the cold, 
 
 ## Next Up
 
-We go back to our regularly scheduled programming in the next chapter and see if we can make an example plot generator you and your teammates can use without local R being around.
+We go back to our regularly scheduled programming in the next chapter and see if we can make an example plot generator you and your teammates can use without local R being around. We'll also be introducing a different way to encapsulate the necessary R WASM packages into your project.
 
